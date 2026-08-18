@@ -31,12 +31,12 @@ class CFamilyLexer(RegexLexer):
 
     # Hexadecimal part in an hexadecimal integer/floating-point literal.
     # This includes decimal separators matching.
-    _hexpart = r'[0-9a-fA-F](\'?[0-9a-fA-F])*'
+    _hexpart = r'[0-9a-fA-F](?:\'?[0-9a-fA-F])*'
     # Decimal part in an decimal integer/floating-point literal.
     # This includes decimal separators matching.
-    _decpart = r'\d(\'?\d)*'
+    _decpart = r'\d(?:\'?\d)*'
     # Integer literal suffix (e.g. 'ull' or 'll').
-    _intsuffix = r'(([uU]?[zZ])|([zZ][uU])|([uU][lL]{0,2})|([lL]{1,2}[uU]?))?'
+    _intsuffix = r'(?:[uU]?[zZ]|[zZ][uU]|[uU][lL]{0,2}|[lL]{1,2}[uU]?)?'
 
     # Identifier regex with C and C++ Universal Character Name (UCN) support.
     _ident = r'(?!\d)(?:[\w$]|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8})+'
@@ -87,17 +87,17 @@ class CFamilyLexer(RegexLexer):
              bygroups(String.Affix, String.Char, String.Char, String.Char)),
 
              # Hexadecimal floating-point literals (C11, C++17)
-            (r'0[xX](' + _hexpart + r'\.' + _hexpart + r'|\.' + _hexpart +
+            (r'0[xX](?:' + _hexpart + r'\.' + _hexpart + r'|\.' + _hexpart +
              r'|' + _hexpart + r')[pP][+-]?' + _hexpart + r'[lL]?', Number.Float),
 
-            (r'(-)?(' + _decpart + r'\.' + _decpart + r'|\.' + _decpart + r'|' +
+            (r'-?(?:' + _decpart + r'\.' + _decpart + r'|\.' + _decpart + r'|' +
              _decpart + r')[eE][+-]?' + _decpart + r'[fFlL]?', Number.Float),
-            (r'(-)?((' + _decpart + r'\.(' + _decpart + r')?|\.' +
-             _decpart + r')[fFlL]?)|(' + _decpart + r'[fFlL])', Number.Float),
-            (r'(-)?0[xX]' + _hexpart + _intsuffix, Number.Hex),
-            (r'(-)?0[bB][01](\'?[01])*' + _intsuffix, Number.Bin),
-            (r'(-)?0(\'?[0-7])+' + _intsuffix, Number.Oct),
-            (r'(-)?' + _decpart + _intsuffix, Number.Integer),
+            (r'-?(?:(?:' + _decpart + r'\.(?:' + _decpart + r')?|\.' +
+             _decpart + r')[fFlL]?)|(?:' + _decpart + r'[fFlL])', Number.Float),
+            (r'-?0[xX]' + _hexpart + _intsuffix, Number.Hex),
+            (r'-?0[bB][01](?:\'?[01])*' + _intsuffix, Number.Bin),
+            (r'-?0(?:\'?[0-7])+' + _intsuffix, Number.Oct),
+            (r'-?' + _decpart + _intsuffix, Number.Integer),
             (r'[~!%^&*+=|?:<>/-]', Operator),
             (r'[()\[\],.]', Punctuation),
             (r'(true|false|NULL|nullptr)\b', Name.Builtin),
